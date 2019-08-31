@@ -1,2 +1,2 @@
-# Data is more expensive than gold
+# Data Is More Expensive Than Gold
 All about Data Science
