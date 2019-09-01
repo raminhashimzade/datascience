@@ -30,11 +30,15 @@ import face_recognition
 from PIL import Image, ImageDraw
 from IPython.display import display
 
-img1 = "/home/ramin/git/datascience/faceVerification/images/L1.jpg"
-img2 = "/home/ramin/git/datascience/faceVerification/images/L2.jpg"
+img1 = "/home/ramin/git/datascience/faceVerification/images/3.jpg"
+img2 = "/home/ramin/git/datascience/faceVerification/images/kid4.jpeg"
 
 known_image = face_recognition.load_image_file(img1)
 unknown_image = face_recognition.load_image_file(img2)
+
+pil_im = Image.open(img1)
+display(pil_im)
+
 
 known_encoding = face_recognition.api.face_encodings(known_image)[0]
 unknown_encoding = face_recognition.api.face_encodings(unknown_image)
