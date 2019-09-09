@@ -1,0 +1,5 @@
+### list installed python versions
+compgen -c python
+for p in $(compgen -c python); do printf "%-16s" $p; $p --version; done
+
+
