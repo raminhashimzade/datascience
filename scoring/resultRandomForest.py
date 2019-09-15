@@ -4,7 +4,7 @@ import cx_Oracle
 import pandas as pd
 import matplotlib.pyplot as plt
 
-connstr='atbdwh/1atbdwh!@DWH'
+connstr='xxxxxxxx'
 connection = cx_Oracle.connect(connstr)
 query = """SELECT * FROM V_ML_LOAN_PORTFOLIO_RESULT T"""
 dataset = pd.read_sql(query, con=connection)

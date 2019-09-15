@@ -16,7 +16,7 @@ app = Flask(__name__)
 api = Api(app)
 
 
-connstr='atbdwh/1atbdwh!@DWH'
+connstr='xxxxxxxx'
 connection = cx_Oracle.connect(connstr)
 queryPred = """select * from V_ML_LOAN_PORTFOLIO_PRED t where t.GL_ID = 1012488"""
 datasetPred = pd.read_sql(queryPred, con=connection)

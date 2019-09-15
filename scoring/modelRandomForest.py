@@ -11,7 +11,7 @@ import cx_Oracle
 import pandas as pd
 
 
-connstr='atbdwh/1atbdwh!@DWH'
+connstr='xxxxxx'
 connection = cx_Oracle.connect(connstr)
 query = """SELECT * FROM V_ML_LOAN_PORTFOLIO_TRAIN T"""
 dataset = pd.read_sql(query, con=connection)
