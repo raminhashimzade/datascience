@@ -5,34 +5,51 @@ Created on Wed Aug 28 22:53:49 2019
 
 conda create -n py37 python=3.7
 activate py36
-
 conda config --add channels conda-forge
-conda install numpy
-conda install scipy
-conda install dlib
 
-pip install --no-dependencies face_recognition
+
+if  centos
+   sudo yum install python36-devel  or sudo yum install python36u-devel
+
+pip install numpy
+pip install scipy
+pip install dlib
+pip install face_recognition
+pip install flask
 
 @author: ramin
+
+"/home/ramin/git/datascience/faceVerification/images/flask/"
+
 """
 import face_recognition
 from PIL import Image, ImageDraw
 from flask import Flask
+from flask import request
 
 app = Flask(__name__)
 
 
-@app.route("/faceiden")
-def faceIden(targetFile, sourceFile):
+@app.route("/faceiden", methods=['POST'])
+def faceIden():
     #import numpy as np    
     #import face_recognition
     #from PIL import Image, ImageDraw
     #from IPython.display import display
     
+    print("request="+str(request.get_json()))
+    
+    req_data = request.get_json(force=True)
+    fileStore = req_data['fileStore']    
+    targetFile = req_data['targetFile']
+    sourceFile = req_data['sourceFile']
+    resultFile = req_data['resultFile']
+    
+    print("fileStore="+str(fileStore))
     
     ## Image Path
-    img1 = "/home/ramin/git/datascience/faceVerification/images/flask/"+targetFile
-    img2 = "/home/ramin/git/datascience/faceVerification/images/flask/"+sourceFile
+    img1 = fileStore+targetFile
+    img2 = fileStore+sourceFile
     deepLevel = 3
     
     
@@ -122,7 +139,7 @@ def faceIden(targetFile, sourceFile):
     
    
     # Save image
-    pil_image.save("/home/ramin/git/datascience/faceVerification/images/flask/source.jpg")
+    pil_image.save(fileStore+resultFile)
     print("image saved")
     
     return result
