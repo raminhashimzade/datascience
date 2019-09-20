@@ -26,6 +26,7 @@ import face_recognition
 from PIL import Image, ImageDraw
 from flask import Flask
 from flask import request
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -36,6 +37,10 @@ def faceIden():
     #import face_recognition
     #from PIL import Image, ImageDraw
     #from IPython.display import display
+    
+    print("------------------------------------------------------------------")
+    print(">>>>>>>>>>>>>>>>>>>>>>> State1        " + str(datetime.utcnow().strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]))
+    
     
     print("request="+str(request.get_json()))
     
@@ -50,12 +55,12 @@ def faceIden():
     ## Image Path
     img1 = fileStore+targetFile
     img2 = fileStore+sourceFile
-    deepLevel = 3
     
     
     known_image = face_recognition.load_image_file(img1)
     unknown_image = face_recognition.load_image_file(img2)
     
+    print(">>>>>>>>>>>>>>>>>>>>>>> State2        " + str(datetime.utcnow().strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]))
     #pil_im = Image.open(img1)
     #display(pil_im)
     
@@ -69,23 +74,24 @@ def faceIden():
             print(" try to find face in target object failed  - deep: " + str(i))
         else:
             break
-       
-        
+    
     if not known_face_locations:
         result = "no face detected in target image"
         return result
         #TO DO - RETURN
     known_encoding = face_recognition.api.face_encodings(known_image, known_face_locations=known_face_locations)[0]
-    
+    print(">>>>>>>>>>>>>>>>>>>>>>> State3        " + str(datetime.utcnow().strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]))    
     
     ####### Detect Face Location in unKnown object
-    unKnown_face_locations = face_recognition.face_locations(unknown_image, number_of_times_to_upsample=deepLevel)
-    if not unKnown_face_locations:
-        result = "no face detected in source image"
-        return result
-        #TO DO - RETURN
+    for i in range(3, 4):
+        unKnown_face_locations = face_recognition.face_locations(unknown_image, number_of_times_to_upsample=i)
+        if not unKnown_face_locations:
+            print(" try to find face in source object failed  - deep: " + str(i))
+        else:
+            break
     
     unknown_encoding = face_recognition.api.face_encodings(unknown_image, known_face_locations=unKnown_face_locations)
+    print(">>>>>>>>>>>>>>>>>>>>>>> State4        " + str(datetime.utcnow().strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]))
     
     ## Constants
     known_face_encodings = [ known_encoding ]
@@ -105,15 +111,18 @@ def faceIden():
     for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
         # See if the face is a match for the known face(s)
         #matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
-    
+        print(">>>>>>>>>>>>>>>>>>>>>>> State5        " + str(datetime.utcnow().strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]))
         name = ""
         
         # Or instead, use the known face with the smallest distance to the new face
         face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
         print(face_distances)
         
-        if (100-face_distances*100 > 60):
-            result = "target face detected in source image"
+        same_person = face_recognition.compare_faces(known_face_encodings, face_encoding)
+        print("same_person = " + str(same_person))
+        
+        if (same_person[0] == True):
+            result = "Target face detected in source image, tolerance = " + str(face_distances)
             name = "Target"
         else:
             name = "Unknown"
@@ -131,13 +140,15 @@ def faceIden():
         draw.text((left + 6, bottom - text_height - 5), name, fill=(255, 255, 255, 255))
     
     
+    print(">>>>>>>>>>>>>>>>>>>>>>> State6        " + str(datetime.utcnow().strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]))
+    
     if (result == ""):
         result = "target face NOT detected in source image"
     
     # Remove the drawing library from memory as per the Pillow docs
     del draw
     
-   
+    print(">>>>>>>>>>>>>>>>>>>>>>> State7        " + str(datetime.utcnow().strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]))
     # Save image
     pil_image.save(fileStore+resultFile)
     print("image saved")
