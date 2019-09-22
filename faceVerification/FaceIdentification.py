@@ -28,7 +28,6 @@ import face_recognition
 from PIL import Image, ImageDraw
 from flask import Flask
 from flask import request
-from datetime import datetime
 import json
 import logging
 
@@ -71,7 +70,8 @@ def faceIden():
     result = "";
     ####### Detect Face Location in known object
     known_face_locations = None
-    for i in range(1, 4):
+    #for i in range(0, 4):
+    for i in reversed(range(4)):
         known_face_locations = face_recognition.face_locations(known_image, number_of_times_to_upsample=i)
         if not known_face_locations:
             logging.info(" try to find face in target object failed  - deep: " + str(i))
@@ -86,7 +86,8 @@ def faceIden():
     logging.info(">>>>>>>>>>>>>>>>>>>>>>> State3")
     
     ####### Detect Face Location in unKnown object
-    for i in range(1, 4):
+    #for i in range(0, 4):
+    for i in reversed(range(4)):
         unKnown_face_locations = face_recognition.face_locations(unknown_image, number_of_times_to_upsample=i)
         if not unKnown_face_locations:
             logging.info(" try to find face in source object failed  - deep: " + str(i))
@@ -111,6 +112,7 @@ def faceIden():
     draw = ImageDraw.Draw(pil_image)
     
     target = []
+    samePerson = []
     n = 1
     # Loop through each face found in the unknown image
     for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
@@ -123,14 +125,17 @@ def faceIden():
         face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
         logging.info(face_distances)
         
-        same_person = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance = 0.6)
+        same_person = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance = 0.55)
         logging.info("same_person = " + str(same_person))
         
         if (same_person[0] == True):
             name = "Target-"+str(n)
             target.append(name)
+            samePerson.append(True)
         else:
             name = "Unknown-"+str(n)
+            target.append(name)
+            samePerson.append(False)
             
         face.append(name)
         tolerance.append(face_distances[0])
@@ -164,7 +169,7 @@ def faceIden():
     pil_image.save(fileStore+resultFile)
     logging.info("image saved")
     
-    score_titles = [{"face": t, "tolerance": s} for t, s in zip(face, tolerance)]
+    score_titles = [{"face": t, "tolerance": s, "samePerson": b} for t, s, b in zip(face, tolerance, samePerson)]
     
     result = '{"resultText" :"'+result+'","faces":'+json.dumps(score_titles)+' }'
     
