@@ -134,7 +134,6 @@ def faceIden():
             samePerson.append(True)
         else:
             name = "Unknown-"+str(n)
-            target.append(name)
             samePerson.append(False)
             
         face.append(name)
