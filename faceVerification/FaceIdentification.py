@@ -10,6 +10,7 @@ conda config --add channels conda-forge
 
 if  centos
    sudo yum install python36-devel  or sudo yum install python36u-devel
+   yum install gcc-c++
 
 
 pip install cmake
