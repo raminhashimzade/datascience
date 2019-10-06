@@ -72,7 +72,7 @@ def faceIden():
     ####### Detect Face Location in known object
     known_face_locations = None
     #for i in range(0, 4):
-    for i in reversed(range(4)):
+    for i in reversed(range(2)):
         known_face_locations = face_recognition.face_locations(known_image, number_of_times_to_upsample=i)
         if not known_face_locations:
             logging.info(" try to find face in target object failed  - deep: " + str(i))
@@ -88,7 +88,7 @@ def faceIden():
     
     ####### Detect Face Location in unKnown object
     #for i in range(0, 4):
-    for i in reversed(range(4)):
+    for i in reversed(range(2)):
         unKnown_face_locations = face_recognition.face_locations(unknown_image, number_of_times_to_upsample=i)
         if not unKnown_face_locations:
             logging.info(" try to find face in source object failed  - deep: " + str(i))
