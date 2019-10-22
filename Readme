@@ -2,4 +2,10 @@
 compgen -c python
 for p in $(compgen -c python); do printf "%-16s" $p; $p --version; done
 
+### find Spyder default python
+import sys
+sys.executable 
+
+## find lib version
+import cv2 as cv2; print(cv2.__version__)
 
